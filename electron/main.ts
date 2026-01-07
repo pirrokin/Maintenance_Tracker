@@ -73,6 +73,23 @@ app.on('activate', () => {
 const Store = require('electron-store');
 const store = new Store()
 
+// Seed Demo Data if empty
+if (!store.has('clients') || (store.get('clients') as any[]).length === 0) {
+  store.set('clients', [
+    {
+      id: 'demo-client',
+      name: 'Entreprise Démo SARL',
+      address: '123 Rue de l\'Exemple',
+      templateType: 'generic',
+      workstations: [
+        { id: 'ws-1', name: 'PC Accueil', type: 'Desktop' },
+        { id: 'ws-2', name: 'PC Direction', type: 'Laptop' },
+        { id: 'ws-3', name: 'Serveur Fichiers', type: 'Server' }
+      ]
+    }
+  ]);
+}
+
 // Database Handlers
 ipcMain.handle('db:get-clients', () => {
   return store.get('clients', [])

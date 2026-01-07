@@ -1,15 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/electron-vite.animate.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { ClientList } from './components/ClientList';
+import { Client } from './types';
 
 function App() {
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+
   return (
-    <div className="container" style={{ padding: '20px', color: 'white' }}>
-      <h1>Maintenance Tracker</h1>
-      <p>Bienvenue. Aucune entreprise sélectionnée.</p>
+    <div className="container">
+      {!selectedClient ? (
+        <ClientList onSelectClient={setSelectedClient} />
+      ) : (
+        <div>
+          <button className="btn-primary" onClick={() => setSelectedClient(null)} style={{ marginBottom: '20px' }}>
+            &larr; Retour
+          </button>
+          <h1>{selectedClient.name}</h1>
+          <p>Interface de maintenance à venir...</p>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

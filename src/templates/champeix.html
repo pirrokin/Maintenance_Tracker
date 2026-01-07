@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Champeix</title>
+    <style>
+        /* A4 Reset */
+        @page { size: A4; margin: 0; }
+        body {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            box-sizing: border-box;
+            padding: 10mm 15mm; /* Standard margin */
+        }
+        
+        /* Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* Header */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5mm;
+        }
+
+        .logo-box {
+            background-color: #4a0e36; /* Dark cherry color from image */
+            color: white;
+            width: 50%;
+            height: 25mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 5mm;
+        }
+        
+        .logo-text-main { font-size: 24pt; font-weight: bold; text-transform: uppercase; }
+        .logo-text-sub { font-size: 10pt; display: flex; align-items: center; gap: 5px; }
+        .dot { height: 8px; width: 8px; background-color: #d81b60; border-radius: 50%; display: inline-block; }
+
+        .company-info {
+            width: 48%;
+            font-size: 8pt;
+            text-align: left;
+            padding-top: 2mm;
+            padding-left: 2mm;
+        }
+
+        .main-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            color: #444;
+            text-transform: uppercase;
+            padding: 3mm 0;
+            margin-bottom: 5mm;
+            border-bottom: 1px solid #000;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8mm;
+        }
+
+        .left-col { width: 50%; }
+        .right-col { width: 45%; }
+
+        .list-title {
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 10pt;
+            margin-bottom: 3mm;
+        }
+
+        .checklist { list-style: none; font-size: 10pt; line-height: 1.4; }
+        .checklist li:before { content: "✓ "; font-weight: bold; }
+
+        .grey-box {
+            background-color: #d3d3d3;
+            text-align: center;
+            padding: 5mm;
+            font-weight: bold;
+            font-size: 11pt;
+            margin-bottom: 5mm;
+        }
+
+        .meta-info div { margin-bottom: 2mm; font-weight: bold; font-size: 10pt; }
+
+        /* Workstation Box */
+        .workstation-box {
+            border: 1px solid #000;
+            padding: 2mm;
+            margin-bottom: 5mm;
+        }
+
+        .ws-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 3mm;
+            font-size: 11pt;
+        }
+
+        .task-list {
+            list-style: none;
+            padding-left: 2mm;
+        }
+
+        .task-list li {
+            margin-bottom: 1mm;
+            font-size: 10pt;
+            position: relative;
+            padding-left: 4mm;
+        }
+
+        .task-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            font-size: 12pt;
+        }
+
+        /* Value placeholder dots */
+        .val::after { content: " ................................."; color: #ccc; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 8pt;
+            border-top: 1px solid #000;
+            padding-top: 2mm;
+            margin-top: 10mm;
+            position: fixed;
+            bottom: 10mm;
+            left: 0; 
+            right: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header-container">
+        <div class="logo-box">
+            <div class="logo-text-main">VERRIER</div>
+            <div class="logo-text-sub"><span class="dot"></span> calipage</div>
+        </div>
+        <div class="company-info">
+            ÉTABLISSEMENTS VERRIER MICHEL - 46 Avenue Kennedy,<br>
+            63500 Issoire - Tél : 04 73 89 09 86 - contact@verrier-michel.fr<br>
+            - www.verrier-michel.calipage.fr
+        </div>
+    </div>
+
+    <!-- Title -->
+    <div class="main-title">
+        COMPTE RENDU DE LA MAINTENANCE<br>
+        MENSUELLE DE LA MAIRIE DE CHAMPEIX
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-section">
+        <div class="left-col">
+            <div class="list-title">POSTES SUR LESQUELS EFFECTUER LA MAINTENANCE :</div>
+            <ul class="checklist">
+                <li>Aurélie</li>
+                <li>Camille</li>
+                <li>Karim</li>
+                <li>Mélanie</li>
+                <li>M.Meallet</li>
+                <li>Marie-Christine</li>
+            </ul>
+        </div>
+        <div class="right-col">
+            <div class="grey-box">
+                Compte rendu de la<br>
+                Maintenance mensuelle de la<br>
+                Mairie de Champeix
+            </div>
+            <div class="meta-info">
+                <div>Date : </div>
+                <div>Responsable de la maintenance : </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workstation 1: Aurélie -->
+    <div class="workstation-box">
+        <div class="ws-title">Poste d'Aurélie :</div>
+        <ul class="task-list">
+            <li>Vérification de la connexion au NAS :</li>
+            <li>Vérification des mises à jour :</li>
+            <li>Vérification de la santé du disque dur :</li>
+            <li>Nombre d'heures du disque dur :</li>
+            <li>Vérification de la connexion aux services Office :</li>
+            <li>Vérification de présence dans le journal d'évènements Windows :</li>
+            <li>Vérification de l'antivirus BitDefender :</li>
+        </ul>
+    </div>
+
+    <!-- Workstation 2: Camille -->
+    <div class="workstation-box">
+        <div class="ws-title">Poste de Camille :</div>
+        <ul class="task-list">
+            <li>Vérification de la connexion au NAS :</li>
+            <li>Vérification des mises à jour :</li>
+            <li>Vérification de la santé du disque dur :</li>
+            <li>Nombre d'heures du disque dur :</li>
+            <li>Vérification de la connexion aux services Office :</li>
+            <li>Vérification de présence dans le journal d'évènements Windows :</li>
+            <li>Vérification de l'antivirus BitDefender :</li>
+        </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        ETS VERRIER MICHEL - Maintenance Informatique<br>
+        1
+    </div>
+
+</body>
+</html>

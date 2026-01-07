@@ -1,8 +1,27 @@
-import { Client } from '../types';
+import { useState } from 'react';
+import { Client, MaintenanceReport } from '../types';
+import { InterventionForm } from './InterventionForm';
 
 export function MaintenanceView({ client, onBack }: { client: Client, onBack: () => void }) {
+    const [showForm, setShowForm] = useState(false);
+
+    const handleSaveReport = (report: MaintenanceReport) => {
+        console.log("Rapport enregistré:", report);
+        // TODO: Save to database and Generate PDF
+        setShowForm(false);
+        alert("Rapport enregistré avec succès ! (Simulation)");
+    };
+
     return (
         <div className="maintenance-container">
+            {showForm && (
+                <InterventionForm
+                    client={client}
+                    onClose={() => setShowForm(false)}
+                    onSave={handleSaveReport}
+                />
+            )}
+
             {/* Header: Navigation + Title + Main Action */}
             <div className="maintenance-header">
                 <div className="header-left">
@@ -11,7 +30,7 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
                     </button>
                     <h1>{client.name}</h1>
                 </div>
-                <button className="btn-primary action-btn">
+                <button className="btn-primary action-btn" onClick={() => setShowForm(true)}>
                     + Nouveau Rapport
                 </button>
             </div>
@@ -33,7 +52,6 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
                         {client.workstations.map(ws => (
                             <li key={ws.id} className="mini-ws-item">
                                 <span className="ws-name">{ws.name}</span>
-                                <span className={`ws-dot ${ws.type.toLowerCase()}`} title={ws.type}></span>
                             </li>
                         ))}
                     </ul>

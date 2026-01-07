@@ -153,12 +153,185 @@ h3 {
   /* Smaller text */
 }
 
-.badge {
+/* Form Overlay & Modal */
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(5px);
+}
+
+.form-container {
+  background: #181818;
+  width: 90%;
+  max-width: 900px;
+  height: 90vh;
+  border-radius: 12px;
+  border: 1px solid #444;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #333;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.form-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Form Cards */
+.ws-form-card {
+  background: #222;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.ws-form-title {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #aaa;
+  font-weight: bold;
+}
+
+/* Button Groups */
+.btn-group {
+  display: flex;
+  background: #111;
+  border-radius: 6px;
+  padding: 2px;
+  border: 1px solid #333;
+}
+
+.btn-toggle {
+  flex: 1;
+  background: transparent;
+  color: #888;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn-toggle:hover {
   background: #333;
   color: #fff;
-  padding: 1px 6px;
-  border-radius: 10px;
-  font-size: 0.7rem;
-  /* Smaller badge */
-  text-transform: uppercase;
+}
+
+/* Active States */
+.active-success {
+  background: #1b5e20 !important;
+  color: #fff !important;
+}
+
+/* Green */
+.active-warning {
+  background: #f57f17 !important;
+  color: #fff !important;
+}
+
+/* Orange */
+.active-error {
+  background: #b71c1c !important;
+  color: #fff !important;
+}
+
+/* Red */
+
+/* Span Helpers */
+.span-2 {
+  grid-column: span 2;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.span-all {
+  grid-column: 1 / -1;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Inputs */
+.input-number,
+.input-text {
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.input-number:focus,
+.input-text:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #555;
+  color: #ddd;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
 }

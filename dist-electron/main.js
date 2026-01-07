@@ -61,7 +61,7 @@ const clientsList = [
       { id: "ch-1", name: "Aurélie", type: "Desktop" },
       { id: "ch-2", name: "Mélanie", type: "Desktop" },
       { id: "ch-3", name: "Marie-Christine", type: "Desktop" },
-      { id: "ch-4", name: "Karime", type: "Desktop" },
+      { id: "ch-4", name: "Karim", type: "Desktop" },
       { id: "ch-5", name: "M.Meallet", type: "Laptop" },
       { id: "ch-6", name: "Camille", type: "Desktop" }
     ]

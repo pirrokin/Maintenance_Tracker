@@ -1,0 +1,89 @@
+.splash-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 1s ease-in-out;
+}
+
+.splash-container.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.splash-title {
+    font-family: 'Segoe UI', sans-serif;
+    /* Modern, clean font */
+    font-size: 5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin: 0;
+
+    /* The Magic: Text is transparent, background is black, light is the gradient */
+    color: transparent;
+    background-color: #000;
+
+    /* The Light Source */
+    background-image: radial-gradient(circle 150px at var(--x) var(--y),
+            rgba(255, 255, 255, 1) 0%,
+            rgba(255, 255, 255, 0.4) 30%,
+            rgba(0, 0, 0, 1) 70%);
+
+    /* Apply background to text only */
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    /* Use CSS variables for complex animation path */
+    animation: spotlight-move 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+    /* Ensure only the light reveals the text */
+    -webkit-text-fill-color: transparent;
+}
+
+/* 
+ * Animation: Right to Left with a Curve
+ * We simulate a curve by moving X linearly and Y with a sine-like ease
+ * However, CSS gradients don't animate 'at X Y' easily with keyframes unless we use @property (modern) 
+ * or background-position.
+ * 
+ * Standard background-position approach for compatibility:
+ * We'll use a large background size and move it.
+ */
+
+/* Redefining for simpler background-position animation which is smoother */
+.splash-title {
+    background-image: radial-gradient(circle closest-side,
+            rgba(255, 255, 255, 0.9) 0%,
+            rgba(80, 80, 80, 0.5) 40%,
+            rgba(0, 0, 0, 1) 100%);
+    background-size: 200% 200%;
+    /* Large enough to move around */
+    background-position: 100% 100%;
+    /* Start bottom right */
+
+    animation: curve-move 3.5s ease-in-out forwards;
+}
+
+@keyframes curve-move {
+    0% {
+        background-position: 150% 100%;
+        /* Far Right, Low */
+    }
+
+    40% {
+        background-position: 50% 0%;
+        /* Center, Top (Peak of curve) */
+    }
+
+    100% {
+        background-position: -50% 80%;
+        /* Far Left, Low */
+    }
+}

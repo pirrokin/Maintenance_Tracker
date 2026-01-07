@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Client } from '../types';
-import { v4 as uuidv4 } from 'uuid';
 
 export function ClientList({ onSelectClient }: { onSelectClient: (client: Client) => void }) {
     const [clients, setClients] = useState<Client[]>([]);
@@ -14,27 +13,10 @@ export function ClientList({ onSelectClient }: { onSelectClient: (client: Client
         setClients(data);
     };
 
-    const handleCreateClient = async () => {
-        const name = prompt("Nom de l'entreprise :");
-        if (!name) return;
-
-        const newClient: Client = {
-            id: uuidv4(),
-            name,
-            workstations: []
-        };
-
-        await window.db.saveClient(newClient);
-        loadClients();
-    };
-
     return (
         <div className="client-list-container">
             <div className="header">
                 <h2>Mes Clients</h2>
-                <button className="btn-primary" onClick={handleCreateClient}>
-                    + Nouvelle Entreprise
-                </button>
             </div>
 
             <div className="grid">
@@ -46,7 +28,7 @@ export function ClientList({ onSelectClient }: { onSelectClient: (client: Client
                 ))}
 
                 {clients.length === 0 && (
-                    <p className="empty-msg">Aucune entreprise. Cliquez sur "Nouvelle Entreprise" pour commencer.</p>
+                    <p className="empty-msg">Aucune entreprise trouvée dans la base de données.</p>
                 )}
             </div>
         </div>

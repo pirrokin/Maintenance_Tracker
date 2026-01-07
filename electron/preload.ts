@@ -24,4 +24,5 @@ contextBridge.exposeInMainWorld('db', {
   getClients: () => ipcRenderer.invoke('db:get-clients'),
   saveClient: (client: any) => ipcRenderer.invoke('db:save-client', client),
   deleteClient: (id: string) => ipcRenderer.invoke('db:delete-client', id),
+  generateReport: (report: any) => ipcRenderer.invoke('report:generate', report),
 })

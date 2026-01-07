@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Template Champeix</title>
     <style>
         /* A4 Reset */
-        @page { size: A4; margin: 0; }
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
         body {
             width: 210mm;
             min-height: 297mm;
@@ -14,11 +19,16 @@
             font-family: Arial, Helvetica, sans-serif;
             font-size: 11pt;
             box-sizing: border-box;
-            padding: 10mm 15mm; /* Standard margin */
+            padding: 10mm 15mm;
+            /* Standard margin */
         }
-        
+
         /* Reset */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         /* Header */
         .header-container {
@@ -29,7 +39,8 @@
         }
 
         .logo-box {
-            background-color: #4a0e36; /* Dark cherry color from image */
+            background-color: #4a0e36;
+            /* Dark cherry color from image */
             color: white;
             width: 50%;
             height: 25mm;
@@ -38,10 +49,27 @@
             justify-content: center;
             padding-left: 5mm;
         }
-        
-        .logo-text-main { font-size: 24pt; font-weight: bold; text-transform: uppercase; }
-        .logo-text-sub { font-size: 10pt; display: flex; align-items: center; gap: 5px; }
-        .dot { height: 8px; width: 8px; background-color: #d81b60; border-radius: 50%; display: inline-block; }
+
+        .logo-text-main {
+            font-size: 24pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .logo-text-sub {
+            font-size: 10pt;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dot {
+            height: 8px;
+            width: 8px;
+            background-color: #d81b60;
+            border-radius: 50%;
+            display: inline-block;
+        }
 
         .company-info {
             width: 48%;
@@ -69,8 +97,13 @@
             margin-bottom: 8mm;
         }
 
-        .left-col { width: 50%; }
-        .right-col { width: 45%; }
+        .left-col {
+            width: 50%;
+        }
+
+        .right-col {
+            width: 45%;
+        }
 
         .list-title {
             font-weight: bold;
@@ -79,8 +112,16 @@
             margin-bottom: 3mm;
         }
 
-        .checklist { list-style: none; font-size: 10pt; line-height: 1.4; }
-        .checklist li:before { content: "✓ "; font-weight: bold; }
+        .checklist {
+            list-style: none;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+
+        .checklist li:before {
+            content: "✓ ";
+            font-weight: bold;
+        }
 
         .grey-box {
             background-color: #d3d3d3;
@@ -91,7 +132,11 @@
             margin-bottom: 5mm;
         }
 
-        .meta-info div { margin-bottom: 2mm; font-weight: bold; font-size: 10pt; }
+        .meta-info div {
+            margin-bottom: 2mm;
+            font-weight: bold;
+            font-size: 10pt;
+        }
 
         /* Workstation Box */
         .workstation-box {
@@ -127,7 +172,10 @@
         }
 
         /* Value placeholder dots */
-        .val::after { content: " ................................."; color: #ccc; }
+        .val::after {
+            content: " .................................";
+            color: #ccc;
+        }
 
         /* Footer */
         .footer {
@@ -138,12 +186,13 @@
             margin-top: 10mm;
             position: fixed;
             bottom: 10mm;
-            left: 0; 
+            left: 0;
             right: 0;
             width: 100%;
         }
     </style>
 </head>
+
 <body>
 
     <!-- Header -->
@@ -162,7 +211,7 @@
     <!-- Title -->
     <div class="main-title">
         COMPTE RENDU DE LA MAINTENANCE<br>
-        MENSUELLE DE LA MAIRIE DE CHAMPEIX
+        MENSUELLE DE {{CLIENT_NAME}}
     </div>
 
     <!-- Summary -->
@@ -170,54 +219,24 @@
         <div class="left-col">
             <div class="list-title">POSTES SUR LESQUELS EFFECTUER LA MAINTENANCE :</div>
             <ul class="checklist">
-                <li>Aurélie</li>
-                <li>Camille</li>
-                <li>Karim</li>
-                <li>Mélanie</li>
-                <li>M.Meallet</li>
-                <li>Marie-Christine</li>
+                {{SUMMARY_LIST}}
             </ul>
         </div>
         <div class="right-col">
             <div class="grey-box">
                 Compte rendu de la<br>
-                Maintenance mensuelle de la<br>
-                Mairie de Champeix
+                Maintenance mensuelle de<br>
+                {{CLIENT_NAME}}
             </div>
             <div class="meta-info">
-                <div>Date : </div>
-                <div>Responsable de la maintenance : </div>
+                <div>Date : {{DATE}}</div>
+                <div>Responsable de la maintenance : {{TECHNICIAN}}</div>
             </div>
         </div>
     </div>
 
-    <!-- Workstation 1: Aurélie -->
-    <div class="workstation-box">
-        <div class="ws-title">Poste d'Aurélie :</div>
-        <ul class="task-list">
-            <li>Vérification de la connexion au NAS :</li>
-            <li>Vérification des mises à jour :</li>
-            <li>Vérification de la santé du disque dur :</li>
-            <li>Nombre d'heures du disque dur :</li>
-            <li>Vérification de la connexion aux services Office :</li>
-            <li>Vérification de présence dans le journal d'évènements Windows :</li>
-            <li>Vérification de l'antivirus BitDefender :</li>
-        </ul>
-    </div>
-
-    <!-- Workstation 2: Camille -->
-    <div class="workstation-box">
-        <div class="ws-title">Poste de Camille :</div>
-        <ul class="task-list">
-            <li>Vérification de la connexion au NAS :</li>
-            <li>Vérification des mises à jour :</li>
-            <li>Vérification de la santé du disque dur :</li>
-            <li>Nombre d'heures du disque dur :</li>
-            <li>Vérification de la connexion aux services Office :</li>
-            <li>Vérification de présence dans le journal d'évènements Windows :</li>
-            <li>Vérification de l'antivirus BitDefender :</li>
-        </ul>
-    </div>
+    <!-- Dynamic Content Area -->
+    {{DETAILS_CONTENT}}
 
     <!-- Footer -->
     <div class="footer">
@@ -226,4 +245,5 @@
     </div>
 
 </body>
+
 </html>

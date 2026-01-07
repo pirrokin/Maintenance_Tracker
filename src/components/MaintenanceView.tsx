@@ -5,11 +5,20 @@ import { InterventionForm } from './InterventionForm';
 export function MaintenanceView({ client, onBack }: { client: Client, onBack: () => void }) {
     const [showForm, setShowForm] = useState(false);
 
-    const handleSaveReport = (report: MaintenanceReport) => {
-        console.log("Rapport enregistré:", report);
-        // TODO: Save to database and Generate PDF
-        setShowForm(false);
-        alert("Rapport enregistré avec succès ! (Simulation)");
+    const handleSaveReport = async (report: MaintenanceReport) => {
+        console.log("Génération du rapport...", report);
+        try {
+            const result = await window.db.generateReport(report);
+            if (result.success) {
+                alert(`Rapport enregistré avec succès !\nEmplacement : ${result.filePath}`);
+                setShowForm(false);
+            } else {
+                alert("Annulé ou erreur lors de l'enregistrement.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erreur lors de la génération du PDF.");
+        }
     };
 
     return (

@@ -34,61 +34,46 @@
         .header-container {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 5mm;
-        }
-
-        .logo-box {
-            background-color: #4a0e36;
-            /* Dark cherry color from image */
-            color: white;
-            width: 50%;
-            height: 25mm;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding-left: 5mm;
-        }
-
-        .logo-text-main {
-            font-size: 24pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .logo-text-sub {
-            font-size: 10pt;
-            display: flex;
             align-items: center;
-            gap: 5px;
+            /* Center vertically */
+            margin-bottom: 10mm;
+            border-bottom: 3px solid #4a0e36;
+            /* Nice visual separator */
+            padding-bottom: 5mm;
         }
 
-        .dot {
-            height: 8px;
-            width: 8px;
-            background-color: #d81b60;
-            border-radius: 50%;
-            display: inline-block;
+        .logo-img {
+            height: 25mm;
+            object-fit: contain;
         }
 
         .company-info {
-            width: 48%;
-            font-size: 8pt;
-            text-align: left;
-            padding-top: 2mm;
-            padding-left: 2mm;
+            font-size: 9pt;
+            text-align: right;
+            /* Align right for cleaner look */
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .company-name {
+            font-weight: bold;
+            font-size: 11pt;
+            text-transform: uppercase;
+            color: #000;
         }
 
         .main-title {
             text-align: center;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 16pt;
+            /* Slightly larger */
             color: #444;
             text-transform: uppercase;
             padding: 3mm 0;
-            margin-bottom: 5mm;
-            border-bottom: 1px solid #000;
+            margin-bottom: 10mm;
+            /* Border removed here as we added one in header */
         }
+
 
         /* Summary Section */
         .summary-section {
@@ -188,14 +173,15 @@
 
     <!-- Header -->
     <div class="header-container">
-        <div class="logo-box">
-            <div class="logo-text-main">VERRIER</div>
-            <div class="logo-text-sub"><span class="dot"></span> calipage</div>
-        </div>
+        <!-- Logo injected via Base64 -->
+        <img src="data:image/png;base64,{{LOGO_BASE64}}" alt="Logo Verrier" class="logo-img">
+
         <div class="company-info">
-            ÉTABLISSEMENTS VERRIER MICHEL - 46 Avenue Kennedy,<br>
-            63500 Issoire - Tél : 04 73 89 09 86 - contact@verrier-michel.fr<br>
-            - www.verrier-michel.calipage.fr
+            <div class="company-name">ÉTABLISSEMENTS VERRIER MICHEL</div>
+            46 Avenue Kennedy, 63500 Issoire<br>
+            Tél : 04 73 89 09 86<br>
+            contact@verrier-michel.fr<br>
+            www.verrier-michel.calipage.fr
         </div>
     </div>
 
@@ -214,11 +200,7 @@
             </ul>
         </div>
         <div class="right-col">
-            <div class="grey-box">
-                Compte rendu de la<br>
-                Maintenance mensuelle de<br>
-                {{CLIENT_NAME}}
-            </div>
+            <!-- Grey box removed as requested (redundant with title) -->
             <div class="meta-info">
                 <div>Date : {{DATE}}</div>
                 <div>Responsable de la maintenance : {{TECHNICIAN}}</div>

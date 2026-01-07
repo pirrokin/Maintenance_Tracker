@@ -164,6 +164,34 @@ ipcMain.handle('report:generate', async (_event, report) => {
   try {
     let html = fs.readFileSync(templatePath, 'utf-8');
 
+    // 2b. Load Logo (Robust Path Finding)
+    let logoBase64 = '';
+    const possiblePaths = [
+      path.join(process.env.APP_ROOT, 'src/assets/logo-verrier.png'), // Dev
+      path.join(__dirname, '../../src/assets/logo-verrier.png'),      // Relative from dist-electron
+      path.join(process.resourcesPath, 'src/assets/logo-verrier.png') // Prod resources
+    ];
+
+    let foundPath = '';
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p)) {
+        foundPath = p;
+        break;
+      }
+    }
+
+    if (foundPath) {
+      try {
+        const logoBuffer = fs.readFileSync(foundPath);
+        logoBase64 = logoBuffer.toString('base64');
+        console.log("Logo loaded from:", foundPath);
+      } catch (e) {
+        console.error("Error reading logo:", e);
+      }
+    } else {
+      console.error("Logo not found in any path:", possiblePaths);
+    }
+
     // 3. Inject General Data
     const clients = store.get('clients');
     const client = clients.find((c: any) => c.id === report.clientId);
@@ -173,6 +201,8 @@ ipcMain.handle('report:generate', async (_event, report) => {
     html = html.replace(/{{CLIENT_NAME}}/g, realClientName);
     html = html.replace(/{{DATE}}/g, report.date);
     html = html.replace(/{{TECHNICIAN}}/g, report.technician);
+    // CRITICAL: Ensure we replace the placeholder with the actual base64 data
+    html = html.replace(/{{LOGO_BASE64}}/g, logoBase64);
 
     // 4. Generate Workstations Lists
     let summaryListHtml = '';

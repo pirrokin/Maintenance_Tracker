@@ -117,12 +117,40 @@ ipcMain.handle("report:generate", async (_event, report) => {
   const templatePath = path.join(process.env.APP_ROOT, "src/templates/champeix.html");
   try {
     let html = fs.readFileSync(templatePath, "utf-8");
+    let logoBase64 = "";
+    const possiblePaths = [
+      path.join(process.env.APP_ROOT, "src/assets/logo-verrier.png"),
+      // Dev
+      path.join(__dirname$1, "../../src/assets/logo-verrier.png"),
+      // Relative from dist-electron
+      path.join(process.resourcesPath, "src/assets/logo-verrier.png")
+      // Prod resources
+    ];
+    let foundPath = "";
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p)) {
+        foundPath = p;
+        break;
+      }
+    }
+    if (foundPath) {
+      try {
+        const logoBuffer = fs.readFileSync(foundPath);
+        logoBase64 = logoBuffer.toString("base64");
+        console.log("Logo loaded from:", foundPath);
+      } catch (e) {
+        console.error("Error reading logo:", e);
+      }
+    } else {
+      console.error("Logo not found in any path:", possiblePaths);
+    }
     const clients = store.get("clients");
     const client = clients.find((c) => c.id === report.clientId);
     const realClientName = client ? client.name : "Unknown Client";
     html = html.replace(/{{CLIENT_NAME}}/g, realClientName);
     html = html.replace(/{{DATE}}/g, report.date);
     html = html.replace(/{{TECHNICIAN}}/g, report.technician);
+    html = html.replace(/{{LOGO_BASE64}}/g, logoBase64);
     let summaryListHtml = "";
     let detailsHtml = "";
     report.workstations.forEach((ws) => {

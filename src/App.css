@@ -94,23 +94,29 @@ h2 {
 }
 
 /* ================= GRID & CARDS ================= */
+/* ================= GRID & CARDS ================= */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  /* Reduced gap */
+  justify-content: flex-start;
 }
 
 .card-client {
+  flex: 0 0 260px;
+  /* Reduced width to guarantee 3 columns */
+  width: 260px;
+  height: 160px;
   background: var(--bg-surface);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-subtle);
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   overflow: hidden;
-  height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

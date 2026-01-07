@@ -9,18 +9,19 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
     const [fading, setFading] = useState(false);
 
     useEffect(() => {
-        // Total animation time (e.g. 4 seconds)
+        // Duration matched to CSS animation (6s) + buffer
         const timer = setTimeout(() => {
             setFading(true);
-            // Wait for fade out transition (e.g. 1s)
-            setTimeout(onFinish, 1000);
-        }, 4000);
+            setTimeout(onFinish, 1500);
+        }, 6500);
 
         return () => clearTimeout(timer);
     }, [onFinish]);
 
     return (
         <div className={`splash-container ${fading ? 'fade-out' : ''}`}>
+            <div className="ambient-light"></div>
+            <div className="noise-overlay"></div>
             <h1 className="splash-title">Maintenance Tracker</h1>
         </div>
     );

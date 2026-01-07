@@ -1,15 +1,18 @@
+/* Base settings & Typography */
 .splash-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #000;
+    background-color: #050505;
+    /* Deep rich black, not pure #000 */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 1s ease-in-out;
+    overflow: hidden;
+    transition: opacity 1.5s ease-in-out;
 }
 
 .splash-container.fade-out {
@@ -17,73 +20,109 @@
     pointer-events: none;
 }
 
-.splash-title {
-    font-family: 'Segoe UI', sans-serif;
-    /* Modern, clean font */
-    font-size: 5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 5px;
-    margin: 0;
-
-    /* The Magic: Text is transparent, background is black, light is the gradient */
-    color: transparent;
-    background-color: #000;
-
-    /* The Light Source */
-    background-image: radial-gradient(circle 150px at var(--x) var(--y),
-            rgba(255, 255, 255, 1) 0%,
-            rgba(255, 255, 255, 0.4) 30%,
-            rgba(0, 0, 0, 1) 70%);
-
-    /* Apply background to text only */
-    background-clip: text;
-    -webkit-background-clip: text;
-
-    /* Use CSS variables for complex animation path */
-    animation: spotlight-move 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-
-    /* Ensure only the light reveals the text */
-    -webkit-text-fill-color: transparent;
-}
-
 /* 
- * Animation: Right to Left with a Curve
- * We simulate a curve by moving X linearly and Y with a sine-like ease
- * However, CSS gradients don't animate 'at X Y' easily with keyframes unless we use @property (modern) 
- * or background-position.
- * 
- * Standard background-position approach for compatibility:
- * We'll use a large background size and move it.
+ * 1. Film Grain Overlay
  */
-
-/* Redefining for simpler background-position animation which is smoother */
-.splash-title {
-    background-image: radial-gradient(circle closest-side,
-            rgba(255, 255, 255, 0.9) 0%,
-            rgba(80, 80, 80, 0.5) 40%,
-            rgba(0, 0, 0, 1) 100%);
-    background-size: 200% 200%;
-    /* Large enough to move around */
-    background-position: 100% 100%;
-    /* Start bottom right */
-
-    animation: curve-move 3.5s ease-in-out forwards;
+.noise-overlay {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    animation: noise-shift 0.5s steps(3) infinite;
+    mix-blend-mode: overlay;
+    z-index: 2;
 }
 
-@keyframes curve-move {
+@keyframes noise-shift {
     0% {
-        background-position: 150% 100%;
-        /* Far Right, Low */
-    }
-
-    40% {
-        background-position: 50% 0%;
-        /* Center, Top (Peak of curve) */
+        transform: translate(0, 0);
     }
 
     100% {
-        background-position: -50% 80%;
-        /* Far Left, Low */
+        transform: translate(10px, 10px);
+    }
+}
+
+/*
+ * 2. The "Studio Wall" Light (Background Ambient)
+ */
+.ambient-light {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%,
+            rgba(30, 30, 30, 1) 0%,
+            rgba(5, 5, 5, 1) 70%);
+    opacity: 0.6;
+    z-index: 1;
+}
+
+/*
+ * 3. Typography & The Spotlight Reveal - FIXED SIZE
+ */
+.splash-title {
+    position: relative;
+    z-index: 10;
+    margin: 0;
+
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    /* SAFEST CLAMP: Starts smaller, maxes out reasonably */
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    /* Reduced tracking significantly to ensure fit */
+    letter-spacing: 0.2em;
+    line-height: 1.2;
+    text-align: center;
+    padding: 0 20px;
+    /* Padding to prevent edge touching */
+    width: 100%;
+    max-width: 100%;
+
+    /* Default state: Invisible (black on black) */
+    color: transparent;
+
+    /* The Spotlight Gradient */
+    background-image: linear-gradient(110deg,
+            /* Diagonal movement */
+            rgba(0, 0, 0, 0) 30%,
+            rgba(255, 255, 255, 1) 45%,
+            rgba(255, 255, 255, 1) 55%,
+            rgba(0, 0, 0, 0) 70%);
+
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    /* Start from right */
+
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    /* Animation */
+    animation: shine-move 6s cubic-bezier(0.2, 0.0, 0.2, 1) forwards,
+        text-breathing 8s ease-out forwards;
+}
+
+@keyframes shine-move {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -150% 0;
+    }
+}
+
+@keyframes text-breathing {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.05);
+        opacity: 1;
     }
 }

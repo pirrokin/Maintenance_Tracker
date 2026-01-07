@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 import { ClientList } from './components/ClientList';
+import { MaintenanceView } from './components/MaintenanceView';
 import { Client } from './types';
 
 function App() {
@@ -11,13 +12,7 @@ function App() {
       {!selectedClient ? (
         <ClientList onSelectClient={setSelectedClient} />
       ) : (
-        <div>
-          <button className="btn-primary" onClick={() => setSelectedClient(null)} style={{ marginBottom: '20px' }}>
-            &larr; Retour
-          </button>
-          <h1>{selectedClient.name}</h1>
-          <p>Interface de maintenance à venir...</p>
-        </div>
+        <MaintenanceView client={selectedClient} onBack={() => setSelectedClient(null)} />
       )}
     </div>
   );

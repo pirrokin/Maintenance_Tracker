@@ -73,22 +73,51 @@ app.on('activate', () => {
 const Store = require('electron-store');
 const store = new Store()
 
-// Seed Demo Data if empty
-if (!store.has('clients') || (store.get('clients') as any[]).length === 0) {
-  store.set('clients', [
-    {
-      id: 'demo-client',
-      name: 'Entreprise Démo SARL',
-      address: '123 Rue de l\'Exemple',
-      templateType: 'generic',
-      workstations: [
-        { id: 'ws-1', name: 'PC Accueil', type: 'Desktop' },
-        { id: 'ws-2', name: 'PC Direction', type: 'Laptop' },
-        { id: 'ws-3', name: 'Serveur Fichiers', type: 'Server' }
-      ]
-    }
-  ]);
-}
+// Force update of Client List (Source of Truth defined in code)
+const clientsList = [
+  {
+    id: 'demo-client',
+    name: 'Entreprise Démo SARL',
+    address: '123 Rue de l\'Exemple',
+    workstations: [
+      { id: 'ws-d1', name: 'PC Accueil', type: 'Desktop' },
+      { id: 'ws-d2', name: 'PC Direction', type: 'Laptop' },
+      { id: 'ws-d3', name: 'Serveur', type: 'Server' }
+    ]
+  },
+  {
+    id: 'mairie-champeix',
+    name: 'Mairie de Champeix',
+    address: 'Champeix',
+    workstations: [
+      { id: 'ch-1', name: 'Aurélie', type: 'Desktop' },
+      { id: 'ch-2', name: 'Mélanie', type: 'Desktop' },
+      { id: 'ch-3', name: 'Marie-Christine', type: 'Desktop' },
+      { id: 'ch-4', name: 'Karime', type: 'Desktop' },
+      { id: 'ch-5', name: 'M.Meallet', type: 'Laptop' },
+      { id: 'ch-6', name: 'Camille', type: 'Desktop' }
+    ]
+  },
+  {
+    id: 'sms',
+    name: 'SMS',
+    address: '',
+    workstations: [
+      { id: 'sms-1', name: 'M.Rechat', type: 'Desktop' },
+      { id: 'sms-2', name: 'PC Secrétaire', type: 'Desktop' }
+    ]
+  },
+  {
+    id: 'combes',
+    name: 'Combes',
+    address: '',
+    workstations: [
+      { id: 'combes-1', name: 'Pascal Combes', type: 'Desktop' }
+    ]
+  }
+];
+
+store.set('clients', clientsList);
 
 // Database Handlers
 ipcMain.handle('db:get-clients', () => {

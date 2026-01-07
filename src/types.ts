@@ -13,3 +13,32 @@ export interface Client {
     templateType?: string; // For the custom PDF template
     workstations: Workstation[];
 }
+// Maintenance Report Types
+export type CheckStatus = 'OK' | 'HS' | 'En attente' | 'Erreur' | 'RAS';
+export type HDDHealth = 'Bon' | 'Prudence' | 'Mauvais';
+export type AntivirusStatus = 'Actif' | 'Inactif' | 'Expiré';
+
+export interface WorkstationReport {
+    workstationId: string;
+    workstationName: string;
+
+    // Checks
+    nasAccess: boolean;
+    windowsUpdates: boolean;
+    hddHealth: HDDHealth;
+    hddHours?: number; // Optional
+    officeAccess: boolean;
+    eventLogs: boolean;
+    antivirus: AntivirusStatus;
+
+    observations?: string;
+}
+
+export interface MaintenanceReport {
+    id?: string; // Optional for new reports
+    clientId: string;
+    date: string;
+    technician: string;
+
+    workstations: WorkstationReport[];
+}

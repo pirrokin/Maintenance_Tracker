@@ -139,6 +139,40 @@ ipcMain.handle('db:delete-client', (_event, clientId) => {
   return true
 })
 
+// Report Handlers
+ipcMain.handle('db:get-reports', (_event, clientId) => {
+  const reports = store.get('reports', []) as any[];
+  if (!clientId) return reports;
+  return reports.filter((r: any) => r.clientId === clientId);
+});
+
+ipcMain.handle('db:save-report', (_event, report) => {
+  const reports = store.get('reports', []) as any[];
+  // If report with same ID exists, update it, otherwise push new
+  const index = reports.findIndex((r: any) => r.id === report.id);
+
+  // Assign a UUID if not present (though frontend usually handles this)
+  if (!report.id) {
+    const crypto = require('crypto');
+    report.id = crypto.randomUUID();
+  }
+
+  if (index > -1) {
+    reports[index] = report;
+  } else {
+    reports.push(report);
+  }
+  store.set('reports', reports);
+  return true;
+});
+
+ipcMain.handle('db:delete-report', (_event, reportId) => {
+  const reports = store.get('reports', []) as any[];
+  const newReports = reports.filter((r: any) => r.id !== reportId);
+  store.set('reports', newReports);
+  return true;
+});
+
 // PDF Generation Logic
 ipcMain.handle('report:generate', async (_event, report) => {
   const win = BrowserWindow.getFocusedWindow();

@@ -103,6 +103,32 @@ ipcMain.handle("db:delete-client", (_event, clientId) => {
   store.set("clients", newClients);
   return true;
 });
+ipcMain.handle("db:get-reports", (_event, clientId) => {
+  const reports = store.get("reports", []);
+  if (!clientId) return reports;
+  return reports.filter((r) => r.clientId === clientId);
+});
+ipcMain.handle("db:save-report", (_event, report) => {
+  const reports = store.get("reports", []);
+  const index = reports.findIndex((r) => r.id === report.id);
+  if (!report.id) {
+    const crypto = require$1("crypto");
+    report.id = crypto.randomUUID();
+  }
+  if (index > -1) {
+    reports[index] = report;
+  } else {
+    reports.push(report);
+  }
+  store.set("reports", reports);
+  return true;
+});
+ipcMain.handle("db:delete-report", (_event, reportId) => {
+  const reports = store.get("reports", []);
+  const newReports = reports.filter((r) => r.id !== reportId);
+  store.set("reports", newReports);
+  return true;
+});
 ipcMain.handle("report:generate", async (_event, report) => {
   const win2 = BrowserWindow.getFocusedWindow();
   const { filePath } = await dialog.showSaveDialog(win2, {

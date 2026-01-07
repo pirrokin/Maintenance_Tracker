@@ -22,5 +22,10 @@ electron.contextBridge.exposeInMainWorld("db", {
   getClients: () => electron.ipcRenderer.invoke("db:get-clients"),
   saveClient: (client) => electron.ipcRenderer.invoke("db:save-client", client),
   deleteClient: (id) => electron.ipcRenderer.invoke("db:delete-client", id),
+  // Reports
+  getReports: (clientId) => electron.ipcRenderer.invoke("db:get-reports", clientId),
+  saveReport: (report) => electron.ipcRenderer.invoke("db:save-report", report),
+  deleteReport: (id) => electron.ipcRenderer.invoke("db:delete-report", id),
+  // Generator
   generateReport: (report) => electron.ipcRenderer.invoke("report:generate", report)
 });

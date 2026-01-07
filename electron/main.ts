@@ -76,16 +76,8 @@ const store = new Store()
 
 // Force update of Client List (Source of Truth defined in code)
 const clientsList = [
-  {
-    id: 'demo-client',
-    name: 'Entreprise Démo SARL',
-    address: '123 Rue de l\'Exemple',
-    workstations: [
-      { id: 'ws-d1', name: 'PC Accueil', type: 'Desktop' },
-      { id: 'ws-d2', name: 'PC Direction', type: 'Laptop' },
-      { id: 'ws-d3', name: 'Serveur', type: 'Server' }
-    ]
-  },
+  // Demo client removed as requested
+
   {
     id: 'mairie-champeix',
     name: 'Mairie de Champeix',

@@ -2,30 +2,23 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'node:fs'
+import type { BrowserWindow as BrowserWindowType, IpcMainInvokeEvent } from 'electron'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
+
 process.env.APP_ROOT = path.join(__dirname, '..')
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
+// Avoid vite:define plugin
 export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
-let win: BrowserWindow | null
+let win: BrowserWindowType | null
 
 function createWindow() {
   win = new BrowserWindow({
@@ -41,22 +34,21 @@ function createWindow() {
     },
   })
 
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
+
+  if (win) {
+    win.webContents.on('did-finish-load', () => {
+      win?.webContents.send('main-process-message', (new Date).toLocaleString())
+    })
+  }
 
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
+    win?.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+    win?.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// Quit when all windows are closed
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -65,8 +57,6 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
@@ -77,9 +67,9 @@ app.on('activate', () => {
 const Store = require('electron-store');
 const store = new Store()
 
-// Force update of Client List (Source of Truth defined in code)
+// Client List
 const clientsList = [
-  // Demo client removed as requested
+
 
   {
     id: 'mairie-champeix',
@@ -116,12 +106,12 @@ const clientsList = [
 
 store.set('clients', clientsList);
 
-// Database Handlers
+// IPC: Database
 ipcMain.handle('db:get-clients', () => {
   return store.get('clients', [])
 })
 
-ipcMain.handle('db:save-client', (_event, client) => {
+ipcMain.handle('db:save-client', (_event: IpcMainInvokeEvent, client: any) => {
   const clients = store.get('clients', []) as any[]
   const index = clients.findIndex((c: any) => c.id === client.id)
   if (index > -1) {
@@ -133,21 +123,21 @@ ipcMain.handle('db:save-client', (_event, client) => {
   return true
 })
 
-ipcMain.handle('db:delete-client', (_event, clientId) => {
+ipcMain.handle('db:delete-client', (_event: IpcMainInvokeEvent, clientId: string) => {
   const clients = store.get('clients', []) as any[]
   const newClients = clients.filter((c: any) => c.id !== clientId)
   store.set('clients', newClients)
   return true
 })
 
-// Report Handlers
-ipcMain.handle('db:get-reports', (_event, clientId) => {
+// IPC: Reports
+ipcMain.handle('db:get-reports', (_event: IpcMainInvokeEvent, clientId: string) => {
   const reports = store.get('reports', []) as any[];
   if (!clientId) return reports;
   return reports.filter((r: any) => r.clientId === clientId);
 });
 
-ipcMain.handle('db:save-report', (_event, report) => {
+ipcMain.handle('db:save-report', (_event: IpcMainInvokeEvent, report: any) => {
   const reports = store.get('reports', []) as any[];
   const index = reports.findIndex((r: any) => r.id === report.id);
   if (!report.id) {
@@ -163,18 +153,18 @@ ipcMain.handle('db:save-report', (_event, report) => {
   return true;
 });
 
-ipcMain.handle('db:delete-report', (_event, reportId) => {
+ipcMain.handle('db:delete-report', (_event: IpcMainInvokeEvent, reportId: string) => {
   const reports = store.get('reports', []) as any[];
   const newReports = reports.filter((r: any) => r.id !== reportId);
   store.set('reports', newReports);
   return true;
 });
 
-// PDF Generation Logic
-ipcMain.handle('report:generate', async (_event, report) => {
+// IPC: PDF Generation
+ipcMain.handle('report:generate', async (_event: IpcMainInvokeEvent, report: any) => {
   const win = BrowserWindow.getFocusedWindow();
 
-  // 1. Ask user where to save
+  // Save Dialog
   const { filePath } = await dialog.showSaveDialog(win, {
     title: 'Enregistrer le rapport PDF',
     defaultPath: `Rapport-${report.clientId}-${report.date}.pdf`,
@@ -183,7 +173,7 @@ ipcMain.handle('report:generate', async (_event, report) => {
 
   if (!filePath) return { success: false };
 
-  // 2. Load Data & Template
+  // Load Data
   const clients = store.get('clients');
   const client = clients.find((c: any) => c.id === report.clientId);
   const realClientName = client ? client.name : 'Unknown Client';
@@ -195,7 +185,7 @@ ipcMain.handle('report:generate', async (_event, report) => {
   try {
     let html = fs.readFileSync(templatePath, 'utf-8');
 
-    // 2b. Load Logo (Robust Path Finding)
+    // Load Logo
     let logoBase64 = '';
     const possiblePaths = [
       path.join(process.env.APP_ROOT, 'src/assets/logo-verrier.png'), // Dev
@@ -220,13 +210,13 @@ ipcMain.handle('report:generate', async (_event, report) => {
       }
     }
 
-    // 3. Inject General Data
+    // Inject Data
     html = html.replace(/{{CLIENT_NAME}}/g, realClientName);
     html = html.replace(/{{DATE}}/g, report.date);
     html = html.replace(/{{TECHNICIAN}}/g, report.technician);
     html = html.replace(/{{LOGO_BASE64}}/g, logoBase64);
 
-    // 4. Generate Workstations Lists
+    // Generate Lists
     let summaryListHtml = '';
     let detailsHtml = '';
 
@@ -234,7 +224,7 @@ ipcMain.handle('report:generate', async (_event, report) => {
       summaryListHtml += `<li>${ws.workstationName}</li>`;
 
       if (isSms) {
-        // SMS Specific Checklist
+        // SMS Checklist
         detailsHtml += `
           <div class="workstation-box">
               <div class="ws-title">Poste de ${ws.workstationName} :</div>
@@ -251,7 +241,7 @@ ipcMain.handle('report:generate', async (_event, report) => {
           </div>
           `;
       } else {
-        // Champeix / Standard Checklist
+        // Standard Checklist
         detailsHtml += `
           <div class="workstation-box">
               <div class="ws-title">Poste de ${ws.workstationName} :</div>
@@ -273,7 +263,7 @@ ipcMain.handle('report:generate', async (_event, report) => {
     html = html.replace('{{SUMMARY_LIST}}', summaryListHtml);
     html = html.replace('{{DETAILS_CONTENT}}', detailsHtml);
 
-    // 5. Inject Global Tablets Section (SMS only)
+    // SMS Tablets
     if (isSms) {
       const tabletStatus = report.tabletsCheck === true ? 'Vérifiées'
         : (report.tabletsCheck === false ? 'Non vérifiées / Problème signalé' : 'Non vérifié');
@@ -288,7 +278,7 @@ ipcMain.handle('report:generate', async (_event, report) => {
         `;
       html = html.replace('{{TABLETS_SECTION}}', tabletHtml);
 
-      // 6. Inject Global Observations (SMS only)
+      // SMS Observations
       const obsHtml = report.globalObservations ? `
         <div class="workstation-box" style="margin-top: 5mm; break-inside: avoid; border-color: #666;">
             <div class="ws-title" style="color: #666;">Observations Générales</div>
@@ -302,19 +292,19 @@ ipcMain.handle('report:generate', async (_event, report) => {
       html = html.replace('{{OBSERVATIONS_SECTION}}', '');
     }
 
-    // 5. Create Hidden Window for Rendering
+    // Render Window
     const printWindow = new BrowserWindow({ show: false, width: 800, height: 600 });
     const htmlDataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
     await printWindow.loadURL(htmlDataUri);
 
-    // 6. Print to PDF
+    // Print
     const pdfData = await printWindow.webContents.printToPDF({
       printBackground: true,
       pageSize: 'A4',
       margins: { top: 0, bottom: 0, left: 0, right: 0 }
     });
 
-    // 7. Write File
+    // Write
     fs.writeFileSync(filePath, pdfData);
     printWindow.close();
 

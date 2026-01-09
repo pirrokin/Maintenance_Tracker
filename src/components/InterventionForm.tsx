@@ -9,14 +9,14 @@ interface Props {
 }
 
 export function InterventionForm({ client, onClose, onSave }: Props) {
-    // General Info State
+    // State
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Default today YYYY-MM-DD
     const [technician, setTechnician] = useState('');
-    // SMS Specific Global State
+    // SMS Global State
     const [globalTabletsCheck, setGlobalTabletsCheck] = useState<boolean | undefined>(undefined);
     const [globalObservations, setGlobalObservations] = useState('');
 
-    // Initialize empty report state
+    // Report State
     const [reportData, setReportData] = useState<Record<string, Partial<WorkstationReport>>>(() => {
         const initial: Record<string, Partial<WorkstationReport>> = {};
         client.workstations.forEach(ws => {
@@ -26,7 +26,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                 nasAccess: true,
                 windowsUpdates: true,
                 hddHealth: 'Bon',
-                // hddHours undefined by default
+
                 officeAccess: true,
                 eventLogs: true,
                 antivirus: 'RAS',
@@ -74,7 +74,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
 
                 <div className="form-scroll-area">
 
-                    {/* SECTION 1: GENERAL INFO */}
+                    {/* General Info */}
                     <div className="general-info-box">
                         <h3>Informations Générales</h3>
                         <div className="form-grid">
@@ -98,7 +98,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                                 />
                             </div>
 
-                            {/* SMS Specific Global Check */}
+                            {/* SMS Check */}
                             {(client.id === 'sms' || client.templateType === 'sms') && (
                                 <div className="form-group">
                                     <label>Vérification Tablettes (Atelier)</label>
@@ -117,13 +117,13 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
 
                     <hr className="divider" />
 
-                    {/* SECTION 2: WORKSTATIONS */}
+                    {/* Workstations */}
                     {client.workstations.map(ws => {
                         const data = reportData[ws.id] || {};
                         return (
                             <div key={ws.id} className="ws-form-card">
                                 <h3 className="ws-form-title">{ws.name}</h3>
-                                {/* Removed badge as requested */}
+
 
                                 <div className="form-grid">
                                     {/* NAS */}
@@ -225,7 +225,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                                         </div>
                                     </div>
 
-                                    {/* SMS Specific: VEEAM */}
+                                    {/* SMS: VEEAM */}
                                     {(client.id === 'sms' || client.templateType === 'sms') && (
                                         <div className="form-group">
                                             <label>Sauvegardes VEEAM</label>
@@ -240,7 +240,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                                         </div>
                                     )}
 
-                                    {/* Obs - Conditional: Hide for SMS, Show for others */}
+                                    {/* Observations (except SMS) */}
                                     {client.id !== 'sms' && client.templateType !== 'sms' && (
                                         <div className="form-group span-all">
                                             <label>Observations</label>
@@ -258,7 +258,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                         );
                     })}
 
-                    {/* Global Observations for SMS */}
+                    {/* SMS Observations */}
                     {(client.id === 'sms' || client.templateType === 'sms') && (
                         <div className="general-info-box" style={{ marginTop: '20px' }}>
                             <h3>Observations Générales</h3>
@@ -282,7 +282,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
     );
 }
 
-// Helpers for colors
+// Helpers
 function getStatusColor(status: HDDHealth) {
     if (status === 'Bon') return 'active-success';
     if (status === 'Mauvais') return 'active-warning';
@@ -291,5 +291,7 @@ function getStatusColor(status: HDDHealth) {
 
 function getAntivirusColor(status: AntivirusStatus) {
     if (status === 'RAS') return 'active-success';
-    return 'active-error';
+    if (status === 'Malware' || status === 'Expiré') return 'active-error';
+    if (status === 'Licence' || status === 'Inactif') return 'active-warning';
+    return '';
 }

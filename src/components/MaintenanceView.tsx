@@ -12,9 +12,8 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
 
     const loadReports = async () => {
         try {
-            // Using window.db to fetch reports
+            // Fetch reports
             const data = await window.db.getReports(client.id);
-            // Default to empty array if undefined
             setReports((data || []).reverse());
         } catch (error) {
             console.error("Error loading reports:", error);
@@ -25,11 +24,11 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
     const handleSaveReport = async (report: MaintenanceReport) => {
         console.log("Saving & Generating...", report);
         try {
-            // 1. Save Data Persistence
+            // Save
             await window.db.saveReport(report);
-            loadReports(); // Refresh history immediately
+            loadReports();
 
-            // 2. Generate PDF
+            // PDF
             const result = await window.db.generateReport(report);
             if (result.success) {
                 alert(`Rapport enregistré et PDF généré avec succès !\nEmplacement : ${result.filePath}`);
@@ -62,7 +61,7 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
                 />
             )}
 
-            {/* Header: Navigation + Title + Main Action */}
+            {/* Header */}
             <div className="maintenance-header">
                 <div className="header-left">
                     <button className="btn-icon" onClick={onBack} title="Retour">
@@ -76,7 +75,7 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
             </div>
 
             <div className="maintenance-layout">
-                {/* Main Content: History */}
+                {/* History */}
                 <div className="main-section">
                     <h2>Historique des maintenances</h2>
 
@@ -105,7 +104,7 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
                     )}
                 </div>
 
-                {/* Sidebar: Workstations (Minimal Details) */}
+                {/* Sidebar */}
                 <div className="side-section">
                     <h3>Parc Informatique <span className="count">({client.workstations.length})</span></h3>
                     <ul className="mini-ws-list">

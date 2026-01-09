@@ -27,13 +27,15 @@ function createWindow() {
       preload: path.join(__dirname$1, "preload.mjs")
     }
   });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  });
+  if (win) {
+    win.webContents.on("did-finish-load", () => {
+      win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+    });
+  }
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
+    win == null ? void 0 : win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
+    win == null ? void 0 : win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 }
 app.on("window-all-closed", () => {
@@ -50,7 +52,6 @@ app.on("activate", () => {
 const Store = require$1("electron-store");
 const store = new Store();
 const clientsList = [
-  // Demo client removed as requested
   {
     id: "mairie-champeix",
     name: "Mairie de Champeix",

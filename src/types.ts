@@ -10,13 +10,13 @@ export interface Client {
     name: string;
     address?: string;
     contactName?: string;
-    templateType?: string; // For the custom PDF template
+    templateType?: string;
     workstations: Workstation[];
 }
 // Maintenance Report Types
 export type CheckStatus = 'OK' | 'HS' | 'En attente' | 'Erreur' | 'RAS';
 export type HDDHealth = 'Bon' | 'Prudence' | 'Mauvais';
-export type AntivirusStatus = 'Actif' | 'Inactif' | 'Expiré';
+export type AntivirusStatus = 'RAS' | 'Malware' | 'Licence' | 'Inactif' | 'Expiré';
 
 export interface WorkstationReport {
     workstationId: string;
@@ -26,25 +26,25 @@ export interface WorkstationReport {
     nasAccess: boolean;
     windowsUpdates: boolean;
     hddHealth: HDDHealth;
-    hddHours?: number; // Optional
+    hddHours?: number;
     officeAccess: boolean;
     eventLogs: boolean;
     antivirus: AntivirusStatus;
 
-    // SMS Specific
+    // SMS Only
     veeamBackup?: boolean;
-    // tabletsCheck moved to global report
+
 
     observations?: string;
 }
 
 export interface MaintenanceReport {
-    id?: string; // Optional for new reports
+    id?: string;
     clientId: string;
     date: string;
     technician: string;
 
-    // SMS Specific Global Check
+    // SMS Only
     tabletsCheck?: boolean;
     globalObservations?: string;
 

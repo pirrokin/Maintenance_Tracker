@@ -1,7 +1,9 @@
 /* 
- * PREMIUM UI OVERHAUL 
- * Theme: "Dark Glass & Neon Cherry"
- */
+/* UI Theme */
+
+html {
+  scroll-behavior: smooth;
+}
 
 :root {
   --bg-deep: #050505;
@@ -14,7 +16,7 @@
   --text-primary: #ffffff;
   --text-secondary: #a0a0a0;
 
-  /* Status Colors (LED style) */
+  /* Status Colors */
   --success: #00e676;
   --warning: #ffea00;
   --error: #ff1744;
@@ -28,14 +30,13 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 
-  /* Subtle background noise texture */
+  /* Noise texture */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
 .container {
   padding: 2rem;
   max-width: 1400px;
-  /* Wider for premium feel */
   margin: 0 auto;
   animation: fade-in 0.8s ease-out;
 }
@@ -52,7 +53,7 @@ body {
   }
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
@@ -61,7 +62,6 @@ body {
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-subtle);
   position: relative;
-  /* Glowing line effect */
 }
 
 .header::after {
@@ -93,19 +93,16 @@ h2 {
   font-weight: 400;
 }
 
-/* ================= GRID & CARDS ================= */
-/* ================= GRID & CARDS ================= */
+/* GRID & CARDS */
 .grid {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  /* Reduced gap */
   justify-content: flex-start;
 }
 
 .card-client {
   flex: 0 0 260px;
-  /* Reduced width to guarantee 3 columns */
   width: 260px;
   height: 160px;
   background: var(--bg-surface);
@@ -122,7 +119,7 @@ h2 {
   justify-content: space-between;
 }
 
-/* Hover Effect: Lift, Glow, & Accent */
+/* Hover Effect */
 .card-client:hover {
   transform: translateY(-8px) scale(1.02);
   border-color: var(--primary);
@@ -142,7 +139,7 @@ h2 {
   margin: 0;
 }
 
-/* Client Card Icon/Badge Decoration */
+/* Decoration */
 .card-client::before {
   content: '';
   position: absolute;
@@ -163,14 +160,13 @@ h2 {
   color: var(--text-secondary);
 }
 
-/* ================= BUTTONS ================= */
+/* BUTTONS */
 .btn-primary {
   background: var(--primary);
   color: white;
   border: none;
   padding: 0.8rem 2rem;
   border-radius: 30px;
-  /* Pillow shape */
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
@@ -216,8 +212,7 @@ h2 {
   color: #fff;
 }
 
-/* ================= MAINTENANCE VIEW ================= */
-/* ================= MAINTENANCE VIEW ================= */
+/* MAINTENANCE VIEW */
 .maintenance-container {
   animation: fade-in 0.5s ease-out;
 }
@@ -227,7 +222,6 @@ h2 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4rem;
-  /* Huge breathing room */
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -259,13 +253,11 @@ h2 {
   transform: translateX(-3px);
 }
 
-/* Layout: Main History (Left) + Sidebar Stations (Right) */
+/* Layout */
 .maintenance-layout {
   display: grid;
   grid-template-columns: 1fr 400px;
-  /* Fixed sidebar width */
   gap: 4rem;
-  /* Big gap between columns */
   align-items: start;
 }
 
@@ -288,15 +280,36 @@ h2 {
   background: rgba(255, 255, 255, 0.02);
 }
 
+.history-list::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.history-list::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+.history-list::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+  border-radius: 10px;
+  border: 2px solid var(--bg-deep);
+}
+
+.history-list::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
 .workstation-list,
 .mini-ws-list {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  /* Airy list */
 }
 
-/* Tech-Card Style for Workstations */
+/* Workstations */
 .workstation-card,
 .mini-ws-item {
   background: linear-gradient(90deg, rgba(25, 25, 25, 0.9) 0%, rgba(15, 15, 15, 0.9) 100%);
@@ -304,7 +317,6 @@ h2 {
   border-left: 4px solid #333;
   border-radius: 12px;
   padding: 1.5rem 2rem;
-  /* More internal padding */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -334,7 +346,7 @@ h2 {
   border-radius: 12px;
 }
 
-/* ================= MODAL & FORM ================= */
+/* MODAL & FORM */
 .form-overlay {
   position: fixed;
   top: 0;
@@ -342,7 +354,6 @@ h2 {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.9);
-  /* Darker backdrop */
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
@@ -396,10 +407,29 @@ h2 {
 .form-scroll-area {
   flex: 1;
   overflow-y: auto;
+  scroll-behavior: smooth;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+}
+
+.form-scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-scroll-area::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+.form-scroll-area::-webkit-scrollbar-thumb {
+  background: #222;
+  border-radius: 10px;
+  border: 2px solid #0a0a0a;
+}
+
+.form-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
 .form-grid {
@@ -408,7 +438,7 @@ h2 {
   gap: 2rem;
 }
 
-/* Individual Workstation Form Blocks */
+/* Form Blocks */
 .ws-form-card {
   background: #111;
   border: 1px solid var(--border-subtle);
@@ -427,7 +457,7 @@ h2 {
   justify-content: space-between;
 }
 
-/* ================= CONTROLS ================= */
+/* CONTROLS */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -443,7 +473,7 @@ h2 {
   font-weight: 700;
 }
 
-/* Modern Segmented Toggle */
+/* Toggle */
 .btn-group {
   display: flex;
   background: #000;
@@ -469,7 +499,7 @@ h2 {
   color: #aaa;
 }
 
-/* Active States - Neon Style */
+/* Active States */
 .active-success {
   background: rgba(0, 230, 118, 0.15) !important;
   color: #00e676 !important;

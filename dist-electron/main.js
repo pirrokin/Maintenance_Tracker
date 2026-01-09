@@ -68,6 +68,7 @@ const clientsList = [
     id: "sms",
     name: "SMS",
     address: "",
+    templateType: "sms",
     workstations: [
       { id: "sms-1", name: "M.Rechat", type: "Desktop" },
       { id: "sms-2", name: "PC Secrétaire", type: "Desktop" }
@@ -137,7 +138,12 @@ ipcMain.handle("report:generate", async (_event, report) => {
     filters: [{ name: "PDF", extensions: ["pdf"] }]
   });
   if (!filePath) return { success: false };
-  const templatePath = path.join(process.env.APP_ROOT, "src/templates/champeix.html");
+  const clients = store.get("clients");
+  const client = clients.find((c) => c.id === report.clientId);
+  const realClientName = client ? client.name : "Unknown Client";
+  const isSms = client && client.templateType === "sms";
+  const templateName = isSms ? "sms.html" : "champeix.html";
+  const templatePath = path.join(process.env.APP_ROOT, `src/templates/${templateName}`);
   try {
     let html = fs.readFileSync(templatePath, "utf-8");
     let logoBase64 = "";
@@ -160,16 +166,10 @@ ipcMain.handle("report:generate", async (_event, report) => {
       try {
         const logoBuffer = fs.readFileSync(foundPath);
         logoBase64 = logoBuffer.toString("base64");
-        console.log("Logo loaded from:", foundPath);
       } catch (e) {
         console.error("Error reading logo:", e);
       }
-    } else {
-      console.error("Logo not found in any path:", possiblePaths);
     }
-    const clients = store.get("clients");
-    const client = clients.find((c) => c.id === report.clientId);
-    const realClientName = client ? client.name : "Unknown Client";
     html = html.replace(/{{CLIENT_NAME}}/g, realClientName);
     html = html.replace(/{{DATE}}/g, report.date);
     html = html.replace(/{{TECHNICIAN}}/g, report.technician);
@@ -178,24 +178,64 @@ ipcMain.handle("report:generate", async (_event, report) => {
     let detailsHtml = "";
     report.workstations.forEach((ws) => {
       summaryListHtml += `<li>${ws.workstationName}</li>`;
-      detailsHtml += `
-      <div class="workstation-box">
-          <div class="ws-title">Poste de ${ws.workstationName} :</div>
-          <ul class="task-list">
-              <li>Vérification de la connexion au NAS : <strong>${ws.nasAccess ? "OK" : "HS"}</strong></li>
-              <li>Vérification des mises à jour : <strong>${ws.windowsUpdates ? "Faites" : "En attente"}</strong></li>
-              <li>Vérification de la santé du disque dur : <strong>${ws.hddHealth}</strong></li>
-              <li>Nombre d'heures du disque dur : <strong>${ws.hddHours ? ws.hddHours + " H" : "Non renseigné"}</strong></li>
-              <li>Vérification de la connexion aux services Office : <strong>${ws.officeAccess ? "OK" : "Erreur"}</strong></li>
-              <li>Vérification de présence dans le journal d'évènements Windows : <strong>${ws.eventLogs ? "RAS" : "Erreurs"}</strong></li>
-              <li>Vérification de l'antivirus BitDefender : <strong>${ws.antivirus}</strong></li>
-          </ul>
-          ${ws.observations ? `<div style="margin-top:5px; font-style:italic;">Obs: ${ws.observations}</div>` : ""}
-      </div>
-      `;
+      if (isSms) {
+        detailsHtml += `
+          <div class="workstation-box">
+              <div class="ws-title">Poste de ${ws.workstationName} :</div>
+              <ul class="task-list">
+                  <li>Vérification santé du disque dur : <strong>${ws.hddHealth}</strong></li>
+                  <li>Nombre d'heures du disque dur : <strong>${ws.hddHours ? ws.hddHours + " H" : "Non renseigné"}</strong></li>
+                  <li>Regarder si la connexion au NAS est toujours active : <strong>${ws.nasAccess ? "OK" : "HS"}</strong></li>
+                  <li>Vérifier les journaux d’évènement Windows : <strong>${ws.eventLogs ? "RAS" : "Erreurs"}</strong></li>
+                  <li>Vérifier l’antivirus Bitdefender : <strong>${ws.antivirus}</strong></li>
+                  <li>Vérifier la connexion du compte Microsoft (Office) : <strong>${ws.officeAccess ? "OK" : "Erreur"}</strong></li>
+                  <li>Vérifier les mises à jour : <strong>${ws.windowsUpdates ? "Faites" : "En attente"}</strong></li>
+                  <li>Vérifier les sauvegardes avec VEEAM : <strong>${ws.veeamBackup === true ? "OK" : ws.veeamBackup === false ? "Échec" : "Non vérifié"}</strong></li>
+              </ul>
+          </div>
+          `;
+      } else {
+        detailsHtml += `
+          <div class="workstation-box">
+              <div class="ws-title">Poste de ${ws.workstationName} :</div>
+              <ul class="task-list">
+                  <li>Vérification de la connexion au NAS : <strong>${ws.nasAccess ? "OK" : "HS"}</strong></li>
+                  <li>Vérification des mises à jour : <strong>${ws.windowsUpdates ? "Faites" : "En attente"}</strong></li>
+                  <li>Vérification de la santé du disque dur : <strong>${ws.hddHealth}</strong></li>
+                  <li>Nombre d'heures du disque dur : <strong>${ws.hddHours ? ws.hddHours + " H" : "Non renseigné"}</strong></li>
+                  <li>Vérification de la connexion aux services Office : <strong>${ws.officeAccess ? "OK" : "Erreur"}</strong></li>
+                  <li>Vérification de présence dans le journal d'évènements Windows : <strong>${ws.eventLogs ? "RAS" : "Erreurs"}</strong></li>
+                  <li>Vérification de l'antivirus BitDefender : <strong>${ws.antivirus}</strong></li>
+              </ul>
+              ${ws.observations ? `<div style="margin-top:5px; font-style:italic;">Obs: ${ws.observations}</div>` : ""}
+          </div>
+          `;
+      }
     });
     html = html.replace("{{SUMMARY_LIST}}", summaryListHtml);
     html = html.replace("{{DETAILS_CONTENT}}", detailsHtml);
+    if (isSms) {
+      const tabletStatus = report.tabletsCheck === true ? "Vérifiées" : report.tabletsCheck === false ? "Non vérifiées / Problème signalé" : "Non vérifié";
+      const tabletHtml = `
+        <div class="workstation-box" style="margin-top: 5mm; break-inside: avoid;">
+            <div class="ws-title">Vérification des tablettes</div>
+            <ul class="task-list">
+                <li>État : <strong>${tabletStatus}</strong></li>
+            </ul>
+        </div>
+        `;
+      html = html.replace("{{TABLETS_SECTION}}", tabletHtml);
+      const obsHtml = report.globalObservations ? `
+        <div class="workstation-box" style="margin-top: 5mm; break-inside: avoid; border-color: #666;">
+            <div class="ws-title" style="color: #666;">Observations Générales</div>
+            <div style="font-style: italic; white-space: pre-wrap;">${report.globalObservations}</div>
+        </div>
+        ` : "";
+      html = html.replace("{{OBSERVATIONS_SECTION}}", obsHtml);
+    } else {
+      html = html.replace("{{TABLETS_SECTION}}", "");
+      html = html.replace("{{OBSERVATIONS_SECTION}}", "");
+    }
     const printWindow = new BrowserWindow({ show: false, width: 800, height: 600 });
     const htmlDataUri = "data:text/html;charset=utf-8," + encodeURIComponent(html);
     await printWindow.loadURL(htmlDataUri);

@@ -31,6 +31,10 @@ export interface WorkstationReport {
     eventLogs: boolean;
     antivirus: AntivirusStatus;
 
+    // SMS Specific
+    veeamBackup?: boolean;
+    // tabletsCheck moved to global report
+
     observations?: string;
 }
 
@@ -39,6 +43,10 @@ export interface MaintenanceReport {
     clientId: string;
     date: string;
     technician: string;
+
+    // SMS Specific Global Check
+    tabletsCheck?: boolean;
+    globalObservations?: string;
 
     workstations: WorkstationReport[];
 }

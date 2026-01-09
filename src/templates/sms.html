@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Template Champeix</title>
+    <title>Template SMS</title>
     <style>
         /* A4 Reset */
         @page {
@@ -138,6 +138,7 @@
                 /* Let @page handle margins */
                 width: 100%;
                 min-height: auto;
+                /* Prevent forcing full A4 height which causes overflow with margins */
             }
         }
 
@@ -189,7 +190,7 @@
     <!-- Title -->
     <div class="main-title">
         COMPTE RENDU DE LA MAINTENANCE<br>
-        MENSUELLE DE {{CLIENT_NAME}}
+        BI-MESTRIELLE DE {{CLIENT_NAME}}
     </div>
 
     <!-- Summary -->
@@ -211,6 +212,12 @@
 
     <!-- Dynamic Content Area -->
     {{DETAILS_CONTENT}}
+
+    <!-- Tablets Section -->
+    {{TABLETS_SECTION}}
+
+    <!-- Observations Section -->
+    {{OBSERVATIONS_SECTION}}
 
     <!-- Footer -->
     <div class="footer">

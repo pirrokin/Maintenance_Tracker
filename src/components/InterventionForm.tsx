@@ -12,6 +12,9 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
     // General Info State
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Default today YYYY-MM-DD
     const [technician, setTechnician] = useState('');
+    // SMS Specific Global State
+    const [globalTabletsCheck, setGlobalTabletsCheck] = useState<boolean | undefined>(undefined);
+    const [globalObservations, setGlobalObservations] = useState('');
 
     // Initialize empty report state
     const [reportData, setReportData] = useState<Record<string, Partial<WorkstationReport>>>(() => {
@@ -23,7 +26,7 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                 nasAccess: true,
                 windowsUpdates: true,
                 hddHealth: 'Bon',
-                // hddHours undefined by default (to show placeholder)
+                // hddHours undefined by default
                 officeAccess: true,
                 eventLogs: true,
                 antivirus: 'RAS',
@@ -51,6 +54,8 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
             clientId: client.id,
             date: date,
             technician: technician,
+            tabletsCheck: globalTabletsCheck,
+            globalObservations: globalObservations,
             workstations: Object.values(reportData).map(d => ({
                 ...d,
                 hddHours: d.hddHours || 0 // Ensure number if empty, or handle as 0
@@ -92,6 +97,21 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                                     onChange={(e) => setTechnician(e.target.value)}
                                 />
                             </div>
+
+                            {/* SMS Specific Global Check */}
+                            {(client.id === 'sms' || client.templateType === 'sms') && (
+                                <div className="form-group">
+                                    <label>Vérification Tablettes (Atelier)</label>
+                                    <div className="btn-group">
+                                        <button
+                                            className={`btn-toggle ${globalTabletsCheck === true ? 'active-success' : ''}`}
+                                            onClick={() => setGlobalTabletsCheck(true)}>Fait</button>
+                                        <button
+                                            className={`btn-toggle ${globalTabletsCheck === false ? 'active-warning' : ''}`}
+                                            onClick={() => setGlobalTabletsCheck(false)}>Non fait</button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -205,21 +225,52 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                                         </div>
                                     </div>
 
-                                    {/* Obs */}
-                                    <div className="form-group span-all">
-                                        <label>Observations</label>
-                                        <input
-                                            type="text"
-                                            className="input-text"
-                                            placeholder="Remarques éventuelles..."
-                                            value={data.observations}
-                                            onChange={(e) => updateField(ws.id, 'observations', e.target.value)}
-                                        />
-                                    </div>
+                                    {/* SMS Specific: VEEAM */}
+                                    {(client.id === 'sms' || client.templateType === 'sms') && (
+                                        <div className="form-group">
+                                            <label>Sauvegardes VEEAM</label>
+                                            <div className="btn-group">
+                                                <button
+                                                    className={`btn-toggle ${data.veeamBackup ? 'active-success' : ''}`}
+                                                    onClick={() => updateField(ws.id, 'veeamBackup', true)}>OK</button>
+                                                <button
+                                                    className={`btn-toggle ${data.veeamBackup === false ? 'active-error' : ''}`}
+                                                    onClick={() => updateField(ws.id, 'veeamBackup', false)}>Échec</button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Obs - Conditional: Hide for SMS, Show for others */}
+                                    {client.id !== 'sms' && client.templateType !== 'sms' && (
+                                        <div className="form-group span-all">
+                                            <label>Observations</label>
+                                            <input
+                                                type="text"
+                                                className="input-text"
+                                                placeholder="Remarques éventuelles..."
+                                                value={data.observations}
+                                                onChange={(e) => updateField(ws.id, 'observations', e.target.value)}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
+
+                    {/* Global Observations for SMS */}
+                    {(client.id === 'sms' || client.templateType === 'sms') && (
+                        <div className="general-info-box" style={{ marginTop: '20px' }}>
+                            <h3>Observations Générales</h3>
+                            <textarea
+                                className="input-text"
+                                style={{ height: '100px', resize: 'vertical', fontFamily: 'inherit' }}
+                                placeholder="Observations globales pour ce rapport..."
+                                value={globalObservations}
+                                onChange={(e) => setGlobalObservations(e.target.value)}
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <div className="form-footer">

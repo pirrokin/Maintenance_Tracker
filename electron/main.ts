@@ -22,7 +22,7 @@ let win: BrowserWindowType | null
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
     width: 1280,
     height: 720,
     resizable: false,      // Locked size

@@ -61,60 +61,89 @@ export function MaintenanceView({ client, onBack }: { client: Client, onBack: ()
                 />
             )}
 
-            {/* Header */}
-            <div className="maintenance-header">
-                <div className="header-left">
-                    <button className="btn-icon" onClick={onBack} title="Retour">
-                        &larr;
-                    </button>
-                    <h1>{client.name}</h1>
-                </div>
-                <button className="btn-primary action-btn" onClick={() => setShowForm(true)}>
+            {/* Top Navigation */}
+            <div className="nav-header">
+                <button className="btn-back" onClick={onBack}>
+                    <span className="icon">←</span> Retour
+                </button>
+                <button className="btn-primary" onClick={() => setShowForm(true)}>
                     + Nouveau Rapport
                 </button>
             </div>
 
-            <div className="maintenance-layout">
-                {/* History */}
-                <div className="main-section">
-                    <h2>Historique des maintenances</h2>
+            <div className="dashboard-grid">
+                {/* Left Sidebar: Client Info & Assets */}
+                <aside className="dashboard-sidebar">
+                    <div className="client-card">
+                        <div className="client-avatar">
+                            {client.name.substring(0, 2).toUpperCase()}
+                        </div>
+                        <h1>{client.name}</h1>
+                        <p className="client-detail">{client.address || "Adresse non renseignée"}</p>
+                        <div className="client-stats">
+                            <div className="stat">
+                                <span className="value">{client.workstations.length}</span>
+                                <span className="label">Postes</span>
+                            </div>
+                            <div className="stat">
+                                <span className="value">{reports.length}</span>
+                                <span className="label">Rapports</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="assets-section">
+                        <h3>Parc Informatique</h3>
+                        <div className="assets-list">
+                            {client.workstations.map(ws => (
+                                <div key={ws.id} className="asset-item">
+                                    <span className="asset-icon">💻</span>
+                                    <span className="asset-name">{ws.name}</span>
+                                    <span className="asset-type">{ws.type}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </aside>
+
+                {/* Main Content: History Feed */}
+                <main className="dashboard-main">
+                    <div className="feed-header">
+                        <h2>Historique des Interventions</h2>
+                    </div>
 
                     {reports.length === 0 ? (
-                        <div className="history-placeholder">
-                            <p>Aucun rapport archivé pour ce client.</p>
+                        <div className="empty-state">
+                            <div className="empty-icon">📂</div>
+                            <p>Aucun rapport d'intervention pour le moment.</p>
+                            <button className="btn-secondary" onClick={() => setShowForm(true)}>
+                                Créer le premier rapport
+                            </button>
                         </div>
                     ) : (
-                        <div className="history-list">
+                        <div className="reports-feed">
                             {reports.map((report) => (
-                                <div key={report.id || Math.random()} className="history-card" onClick={() => alert("La relecture du rapport sera disponible prochainement.")}>
-                                    <div className="h-info">
-                                        <div className="h-date">{report.date}</div>
-                                        <div className="h-tech">Technicien: <span className="highlight">{report.technician}</span></div>
+                                <div key={report.id || Math.random()} className="report-card">
+                                    <div className="report-icon">📄</div>
+                                    <div className="report-content">
+                                        <div className="report-date">{new Date(report.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                                        <div className="report-tech">Technicien : <strong>{report.technician}</strong></div>
+                                        <div className="report-actions">
+                                            <button className="action-link" onClick={() => alert("Relecture bientôt disponible")}>Voir détails</button>
+                                            <button
+                                                className="delete-btn"
+                                                onClick={(e) => report.id && handleDeleteReport(e, report.id)}
+                                                title="Supprimer"
+                                            >
+                                                Supprimer
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button
-                                        className="btn-icon btn-delete"
-                                        onClick={(e) => report.id && handleDeleteReport(e, report.id)}
-                                        title="Supprimer ce rapport"
-                                    >
-                                        &times;
-                                    </button>
                                 </div>
                             ))}
                         </div>
                     )}
-                </div>
-
-                {/* Sidebar */}
-                <div className="side-section">
-                    <h3>Parc Informatique <span className="count">({client.workstations.length})</span></h3>
-                    <ul className="mini-ws-list">
-                        {client.workstations.map(ws => (
-                            <li key={ws.id} className="mini-ws-item">
-                                <span className="ws-name">{ws.name}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                </main>
             </div>
         </div>
     );

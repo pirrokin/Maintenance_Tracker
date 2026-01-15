@@ -30,7 +30,8 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
                 officeAccess: true,
                 eventLogs: true,
                 antivirus: 'RAS',
-                observations: ''
+                observations: '',
+                rdxCheck: true // Default boolean
             };
         });
         return initial;
@@ -126,18 +127,35 @@ export function InterventionForm({ client, onClose, onSave }: Props) {
 
 
                                 <div className="form-grid">
-                                    {/* NAS */}
-                                    <div className="form-group">
-                                        <label>Connexion NAS</label>
-                                        <div className="btn-group">
-                                            <button
-                                                className={`btn-toggle ${data.nasAccess ? 'active-success' : ''}`}
-                                                onClick={() => updateField(ws.id, 'nasAccess', true)}>OK</button>
-                                            <button
-                                                className={`btn-toggle ${!data.nasAccess ? 'active-error' : ''}`}
-                                                onClick={() => updateField(ws.id, 'nasAccess', false)}>HS</button>
+                                    {/* NAS (Normally shown, hidden for Combes) */}
+                                    {client.templateType !== 'pascal_combes' && (
+                                        <div className="form-group">
+                                            <label>Connexion NAS</label>
+                                            <div className="btn-group">
+                                                <button
+                                                    className={`btn-toggle ${data.nasAccess ? 'active-success' : ''}`}
+                                                    onClick={() => updateField(ws.id, 'nasAccess', true)}>OK</button>
+                                                <button
+                                                    className={`btn-toggle ${!data.nasAccess ? 'active-error' : ''}`}
+                                                    onClick={() => updateField(ws.id, 'nasAccess', false)}>HS</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
+
+                                    {/* RDX (Only for Combes) */}
+                                    {client.templateType === 'pascal_combes' && (
+                                        <div className="form-group">
+                                            <label>Vérification RDX (Utility)</label>
+                                            <div className="btn-group">
+                                                <button
+                                                    className={`btn-toggle ${data.rdxCheck ? 'active-success' : ''}`}
+                                                    onClick={() => updateField(ws.id, 'rdxCheck', true)}>OK</button>
+                                                <button
+                                                    className={`btn-toggle ${data.rdxCheck === false ? 'active-error' : ''}`}
+                                                    onClick={() => updateField(ws.id, 'rdxCheck', false)}>HS</button>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {/* Mises à jour */}
                                     <div className="form-group">

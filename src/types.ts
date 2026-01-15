@@ -34,6 +34,9 @@ export interface WorkstationReport {
     // SMS Only
     veeamBackup?: boolean;
 
+    // Pascal Combes Only
+    rdxCheck?: boolean;
+
 
     observations?: string;
 }

@@ -98,6 +98,7 @@ const clientsList = [
     id: 'combes',
     name: 'Combes',
     address: '',
+    templateType: 'pascal_combes',
     workstations: [
       { id: 'combes-1', name: 'Pascal Combes', type: 'Desktop' }
     ]
@@ -179,7 +180,12 @@ ipcMain.handle('report:generate', async (_event: IpcMainInvokeEvent, report: any
   const realClientName = client ? client.name : 'Unknown Client';
   const isSms = client && client.templateType === 'sms';
 
-  const templateName = isSms ? 'sms.html' : 'champeix.html';
+  let templateName = 'champeix.html';
+  if (client) {
+    if (client.templateType === 'sms') templateName = 'sms.html';
+    else if (client.templateType === 'pascal_combes') templateName = 'pascal_combes.html';
+  }
+
   const templatePath = path.join(process.env.APP_ROOT, `src/templates/${templateName}`);
 
   try {
@@ -240,8 +246,25 @@ ipcMain.handle('report:generate', async (_event: IpcMainInvokeEvent, report: any
               </ul>
           </div>
           `;
+      } else if (client && client.templateType === 'pascal_combes') {
+        // Pascal Combes Checklist
+        detailsHtml += `
+          <div class="workstation-box">
+              <div class="ws-title">Poste de ${ws.workstationName} :</div>
+              <ul class="task-list">
+                  <li>Vérification de l'état de la RDX (RDX Utility) : <strong>${ws.rdxCheck ? 'OK' : 'HS'}</strong></li>
+                  <li>Vérification des mises à jour : <strong>${ws.windowsUpdates ? 'Faites' : 'En attente'}</strong></li>
+                  <li>Vérification de la santé du disque dur : <strong>${ws.hddHealth}</strong></li>
+                  <li>Nombre d'heures du disque dur : <strong>${ws.hddHours ? ws.hddHours + ' H' : 'Non renseigné'}</strong></li>
+                  <li>Vérification de la connexion aux services Office : <strong>${ws.officeAccess ? 'OK' : 'Erreur'}</strong></li>
+                  <li>Vérification de présence dans le journal d'évènements Windows : <strong>${ws.eventLogs ? 'RAS' : 'Erreurs'}</strong></li>
+                  <li>Vérification de l'antivirus BitDefender : <strong>${ws.antivirus}</strong></li>
+              </ul>
+              ${ws.observations ? `<div style="margin-top:5px; font-style:italic;">Obs: ${ws.observations}</div>` : ''}
+          </div>
+          `;
       } else {
-        // Standard Checklist
+        // Standard Checklist (Champeix, etc.)
         detailsHtml += `
           <div class="workstation-box">
               <div class="ws-title">Poste de ${ws.workstationName} :</div>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Template Pascal Combes</title>
+    <style>
+        /* A4 Reset */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            box-sizing: border-box;
+            padding: 10mm 15mm;
+        }
+
+        /* Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10mm;
+            border-bottom: 3px solid #4a0e36;
+            padding-bottom: 5mm;
+        }
+
+        .logo-img {
+            height: 25mm;
+            object-fit: contain;
+        }
+
+        .company-info {
+            font-size: 9pt;
+            text-align: right;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .company-name {
+            font-weight: bold;
+            font-size: 11pt;
+            text-transform: uppercase;
+            color: #000;
+        }
+
+        .main-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16pt;
+            color: #444;
+            text-transform: uppercase;
+            padding: 3mm 0;
+            margin-bottom: 10mm;
+        }
+
+
+        /* Summary Section */
+        .summary-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8mm;
+        }
+
+        .left-col {
+            width: 50%;
+        }
+
+        .right-col {
+            width: 45%;
+        }
+
+        .list-title {
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 10pt;
+            margin-bottom: 3mm;
+        }
+
+        .checklist {
+            list-style: none;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+
+        .checklist li:before {
+            content: "✓ ";
+            font-weight: bold;
+        }
+
+        .grey-box {
+            background-color: #d3d3d3;
+            text-align: center;
+            padding: 5mm;
+            font-weight: bold;
+            font-size: 11pt;
+            margin-bottom: 5mm;
+        }
+
+        .meta-info div {
+            margin-bottom: 2mm;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+
+        /* Print Specifics */
+        @media print {
+            @page {
+                size: A4;
+                margin: 10mm 15mm 20mm 15mm;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 0;
+                width: 100%;
+                min-height: auto;
+            }
+        }
+
+        /* Workstation Box */
+        .workstation-box {
+            border: 1px solid #000;
+            padding: 2mm;
+            margin-bottom: 5mm;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            background-color: white;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 8pt;
+            border-top: 1px solid #000;
+            padding-top: 2mm;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header-container">
+        <!-- Logo -->
+        <img src="data:image/png;base64,{{LOGO_BASE64}}" alt="Logo Verrier" class="logo-img">
+
+        <div class="company-info">
+            <div class="company-name">ÉTABLISSEMENTS VERRIER MICHEL</div>
+            46 Avenue Kennedy, 63500 Issoire<br>
+            Tél : 04 73 89 09 86<br>
+            contact@verrier-michel.fr<br>
+            www.verrier-michel.calipage.fr
+        </div>
+    </div>
+
+    <!-- Title -->
+    <div class="main-title">
+        COMPTE RENDU DE LA MAINTENANCE<br>
+        MENSUELLE DE {{CLIENT_NAME}}
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-section">
+        <div class="left-col">
+            <div class="list-title">POSTES SUR LESQUELS EFFECTUER LA MAINTENANCE :</div>
+            <ul class="checklist">
+                {{SUMMARY_LIST}}
+            </ul>
+        </div>
+        <div class="right-col">
+            <div class="meta-info">
+                <div>Date : {{DATE}}</div>
+                <div>Responsable de la maintenance : {{TECHNICIAN}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    {{DETAILS_CONTENT}}
+
+    <!-- Footer -->
+    <div class="footer">
+        ETS VERRIER MICHEL - Maintenance Informatique<br>
+        1
+    </div>
+
+</body>
+
+</html>
